@@ -18,7 +18,7 @@ public class IconImage extends Model {
 		super(data);
 	}
 	
-	@BigIntegerColumn(length = 10)
+	@BigIntegerColumn(length = 10, Key = true, AutoIncrement = true)
 	public long id;
 	
 	@StringColumn(length = 255)

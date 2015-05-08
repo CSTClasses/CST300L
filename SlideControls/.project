@@ -3,6 +3,8 @@
 	<name>SlideControls</name>
 	<comment></comment>
 	<projects>
+		<project>Map</project>
+		<project>SynloadFramework</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

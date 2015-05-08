@@ -1,4 +1,4 @@
-package us.nxgencity.map.elements;
+package us.nxgencity.controls.elements;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -11,16 +11,16 @@ import com.synload.framework.handlers.Request;
 import com.synload.framework.handlers.Response;
 import com.synload.framework.ws.WSHandler;
 
-public class Entries extends Response{
+public class EditEntries extends Response{
 	public List<Entry> entries = new ArrayList<Entry>();
-	public Entries(
+	public EditEntries(
 			WSHandler user, 
 			List<String> templateCache
 		){
-		this.setTemplateId("Ens");
-		this.setPageId("Entrs");
+		this.setTemplateId("EdEns");
+		this.setPageId("EditEntrs");
 		if(!templateCache.contains(this.getTemplateId())){
-			this.setTemplate(this.getTemplate("./elements/entries.html"));
+			this.setTemplate(this.getTemplate("./elements/entriesEdit.html"));
 		}
 		try {
 			entries = Entry._find(Entry.class, "").exec(Entry.class);
@@ -31,12 +31,12 @@ public class Entries extends Response{
 			e.printStackTrace();
 		}
 		this.setParent("#entries");
-		Request r = new Request("get","connectMap");
+		Request r = new Request("get","editMap");
 		this.setRequest(r);
 		//this.setParentTemplate("wrapper");
 		this.setForceParent(false);
 		
-		this.setAction("cabot");
+		this.setAction("abot");
 		this.setPageTitle("Synload Entries!");
 	}
 }

@@ -4,21 +4,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+import us.nxgencity.map.MapModule;
 import com.synload.framework.modules.annotations.HasMany;
-import com.synload.framework.modules.annotations.HasOne;
 import com.synload.framework.modules.annotations.NonSQL;
 import com.synload.framework.modules.annotations.SQLTable;
 import com.synload.framework.modules.annotations.sql.BigIntegerColumn;
 import com.synload.framework.modules.annotations.sql.FloatColumn;
-import com.synload.framework.modules.annotations.sql.LongBlobColumn;
 import com.synload.framework.modules.annotations.sql.StringColumn;
 import com.synload.framework.sql.Model;
 
-@SQLTable(description = "Individual slide", name = "Entry", version = 0.2)
+@SQLTable(description = "Individual slide", name = "Entry", version = 0.3)
 public class Entry extends Model {
 	public Entry(ResultSet rs) {
 		super(rs);
+		this.setHtml(MapModule.bbcode.process(this.getBody()));
 		try {
 			img = this._related(IconImage.class).exec(IconImage.class);
 			simg = this._related(SupportImage.class).exec(SupportImage.class);
@@ -33,27 +32,16 @@ public class Entry extends Model {
 	}
 	public Entry(Object... data){
 		super(data);
-		try {
-			img = this._related(IconImage.class).exec(IconImage.class);
-			simg = this._related(SupportImage.class).exec(SupportImage.class);
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | NoSuchMethodException
-				| SecurityException | ClassNotFoundException
-				| InvocationTargetException | NoSuchFieldException
-				| SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
-	@BigIntegerColumn(length = 10)
+	@BigIntegerColumn(length = 10, Key = true, AutoIncrement = true)
 	public long id;
 	
-	@LongBlobColumn()
+	@StringColumn(length = 512)
 	@HasMany(key = "id", of = IconImage.class)
 	public String icons;
 	
-	@LongBlobColumn()
+	@StringColumn(length = 512)
 	@HasMany(key = "id", of = SupportImage.class)
 	public String images;
 	
@@ -76,8 +64,42 @@ public class Entry extends Model {
 	public List<IconImage> img;
 	
 	@NonSQL
+	public String html;
+	
+	@NonSQL
 	public List<SupportImage> simg;
 
+	
+	public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = x;
+	}
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public List<IconImage> getImg() {
+		return img;
+	}
+	public void setImg(List<IconImage> img) {
+		this.img = img;
+	}
+	public String getHtml() {
+		return html;
+	}
+	public void setHtml(String html) {
+		this.html = html;
+	}
+	public List<SupportImage> getSimg() {
+		return simg;
+	}
+	public void setSimg(List<SupportImage> simg) {
+		this.simg = simg;
+	}
 	public String getPresenter() {
 		return presenter;
 	}

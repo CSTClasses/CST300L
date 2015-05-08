@@ -21,15 +21,43 @@ public class WSHandler {
 			List<Entry> entries = Entry._find(Entry.class, "`id`=?", id).exec(Entry.class);
 			if(entries.size()>0){
 				Entry e = entries.get(0);
-				List<com.synload.framework.ws.WSHandler> clients = OOnPage.getClients("Entry", "1");
+				List<com.synload.framework.ws.WSHandler> clients = OOnPage.getClients("Map", "1");
 				for(com.synload.framework.ws.WSHandler client:clients){
-					EntryPage ep = new EntryPage(
-						client,
+					try {
+						EntryPage ep = new EntryPage(
+							client,
+							new ArrayList<String>(),
+							e
+						);
+						client.send(ep);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}else{
+				System.out.println("ERROR: id not found! "+id);
+			}
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | NoSuchMethodException
+				| SecurityException | ClassNotFoundException
+				| InvocationTargetException | SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	@Event(name="getSlide",description="Get local single slide",trigger={"get","slide"},type=Type.WEBSOCKET)
+	public void getSlide(RequestEvent event){
+		String id = event.getRequest().getData().get("slideId");
+		try {
+			List<Entry> entries = Entry._find(Entry.class, "`id`=?", id).exec(Entry.class);
+			if(entries.size()>0){
+				Entry e = entries.get(0);
+				event.getSession().send(new EntryPage(
+						event.getSession(),
 						new ArrayList<String>(),
 						e
-					);
-					client.send(ep);
-				}
+					));
+			}else{
+				System.out.println("ERROR: id not found! "+id);
 			}
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | NoSuchMethodException
@@ -43,4 +71,5 @@ public class WSHandler {
 		OOnPage.add(event.getSession(), "Map", "1");
 		event.getSession().send(new Entries(event.getSession(),event.getRequest().getTemplateCache()));
 	}
+
 }
